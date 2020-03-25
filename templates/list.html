@@ -1,0 +1,33 @@
+{% extends 'a.html' %}
+{% block content %}
+    <div>
+        <h2> &nbsp </h2>
+    </div>
+    <hr>
+    <div class="put">
+        <form action="Serch" method="post" id="list_id">
+            {% for name in names %}
+                <a class="list_a" id="text_a" href="javascript:void(0);">{{ name }}</a><br>
+            {% endfor %}
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!-- 发送 ,增加功能的js-->
+    <script type="text/javascript">
+        $(".list_a").click(function () {
+            var name = $(this).html();
+            console.log(name)
+            $.ajax({
+                url:"/list_serch",
+                type:"get",
+                dataType:"text",
+                data:{ name:name },
+                success:function (data){
+                    window.location = "/l_serch"
+                }
+
+            })
+        })
+        </script>
+{% endblock %}

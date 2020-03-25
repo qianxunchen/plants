@@ -1,0 +1,29 @@
+{% extends 'a.html' %}
+    {% block content %}
+    <div class="put">
+        <div>
+            {% if message %}
+            <h3> &nbsp </h3>
+                <h3>{{ nowname }}</h3>
+            <hr>
+                {% for body in message %}
+                    <p>&nbsp&nbsp&nbsp&nbsp{{ body }}</p>
+                {% endfor %}
+            {% else %}
+                <p> 没有找到 </p>
+            {% endif %}
+        </div>
+        <table>
+            <tr>
+                {% if src %}
+                {% for s in src %}
+                    <!--<a><img src="{{ s }}"></a>-->
+                    <td width="250px" height="150px" aligh="left"><img src="{{ s }}" border="0"></td>
+                {% endfor %}
+                {% else %}
+                    <p> &nbsp </p>
+                {% endif %}
+            </tr>
+        </table>
+    </div>
+{% endblock %}

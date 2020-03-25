@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!-- 增 -->
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>后台</title>
+	<style type="text/css">
+		body{
+			/* 渐变色 */
+			background: linear-gradient(120deg,  #3D7878,#336666);
+			/* background: #336666; */
+			color: #F0FFFF;
+			width: 800px;
+			margin-left: auto;
+			margin-right: auto;
+
+		}
+		div{
+			height: 32px;
+			width: 70%;
+			/* text-align: center; */
+			margin:25px auto auto auto;
+			/* padding-top: 10px; */
+
+		}
+		a{
+			display: inline-block;
+			color:#FFFFFF;
+			font-size:14px;
+			font-weight: bold;
+			font-family: '微软雅黑';
+			padding:0 20px;
+			border-left: 2px solid #95CACA;
+			text-decoration: none;
+			text-align: center;
+		}
+		.i{
+			display:block;
+			width: 300px;
+			background: #FAEBD7;
+		}
+		.ii{
+			width: 600px;
+			height:300px;
+			display:block;
+			background: #FAEBD7;
+		}
+		.i_xueming_chandi{
+			width: 600px;
+			height:100px;
+			display:block;
+			background: #FAEBD7;
+		}
+		.sub{
+			margin:25px auto auto 200px;
+			background:#FAEBD7;
+		}
+	</style>
+
+</head>
+<body>
+	<div>
+		<a href="{{url_for('app_view.index')}}" style="border-left: 0;">前台</a>
+		<a href="{{url_for('app_admin.fabu')}}" >发布</a>
+		<a href="{{url_for('app_admin.admin')}}">增</a>
+		<a href="{{url_for('app_admin.delete')}}">删</a>
+		<a href="{{url_for('app_admin.amend')}}">改</a>
+		<a href="{{url_for('app_admin.serch_admin')}}">查</a>
+		<a href="{{url_for('app_login.login_out')}}">退出</a>
+	</div>
+
+		{% block content %}
+
+
+		{% endblock %}
+</body>
+</html>

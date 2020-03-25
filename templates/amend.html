@@ -1,0 +1,13 @@
+{% extends 'admin_base.html' %}
+
+    {% block content %}
+	<div>
+		<form action="add_gai" method="post">
+			 id<input type="text"  class="i" name="add_id">
+			名称<input type="text"  class="i" name="add_name">
+			 内容<textarea class="ii" name="add_text"></textarea>
+			 <input type="submit" class="sub">
+		</form>
+	</div>
+
+	{% endblock %}

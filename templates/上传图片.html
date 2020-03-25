@@ -1,0 +1,12 @@
+{% extends 'a.html' %}
+
+  {% block content %}
+
+      <div style="width:100px;height:100px;position: absolute;left: 50%;top: 50%;margin: -50px 0 0 -50px;">
+          <form method="post" action="/push" enctype="multipart/form-data">
+          <input type="file" size="30" name="photo"/>
+          <br>
+          <input type="submit" value="上传" class="button-new" style="margin-top:15px;"/>
+          </form>
+      </div>
+  {% endblock %}

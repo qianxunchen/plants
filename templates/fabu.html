@@ -1,0 +1,16 @@
+{% extends 'admin_base.html' %}
+
+    {% block content %}
+	<div>
+		<form action="add_fabu" method="post">
+			 id<input type="text"  class="i" name="name_id">
+			名称<input type="text"  class="i" name="name">
+            学名<textarea class="i_xueming_chandi" name="name_study"></textarea>
+            产地<textarea class="i_xueming_chandi" name="name_put"></textarea>
+            小知识<textarea class="ii" name="min_know"></textarea>
+            图片<input type="text"  class="i" name="name_photo">
+			 <input type="submit" class="sub" value="发布">
+		</form>
+	</div>
+
+	{% endblock %}

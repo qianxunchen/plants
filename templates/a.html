@@ -1,0 +1,91 @@
+<html lang="zxx">
+
+<head>
+	<title>Plants</title>
+	<!-- Meta tag Keywords -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8" />
+	<meta name="keywords" content="" />
+	<script>
+		addEventListener("load", function () {
+			setTimeout(hideURLbar, 0);
+		}, false);
+
+		function hideURLbar() {
+			window.scrollTo(0, 1);
+		}
+	</script>
+	<!--// Meta tag Keywords -->
+
+	<!-- Custom-Files -->
+	<link rel="stylesheet" href="../static/css/bootstrap.css">
+	<!-- Bootstrap-Core-CSS -->
+	<link rel="stylesheet" media="all"  type="text/css" href="../static/css/css_slider.css">
+	<!-- banner slider -->
+	<link rel="stylesheet" type="text/css" media="all" href="../static/css/仿css.css">
+	<!-- Style-CSS -->
+	<link  rel="stylesheet" href="../static/css/font-awesome.min.css">
+	<!-- Font-Awesome-Icons-CSS -->
+	<!-- //Custom-Files -->
+	<!--小图标-->
+	<link rel="shortcut icon" href="../static/images/favicon.ico">
+	<!--小图标-->
+	<!-- Web-Fonts -->
+	<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i"
+	 rel="stylesheet">
+	<link href="http://fonts.googleapis.com/css?family=Niconne&amp;subset=latin-ext" rel="stylesheet">
+	<link href="http://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;subset=devanagari,latin-ext"
+	 rel="stylesheet">
+	<!-- //Web-Fonts -->
+</head>
+
+<body>
+	<div id="home">
+		<!-- header -->
+		<header class="header-style fixed-top">
+			<div class="container">
+				<div class="header d-lg-flex justify-content-between align-items-center">
+					<!-- logo -->
+					<h1 class="logo text-center">
+						<a href="{{url_for('app_view.index')}}">Plants<i class="fa fa-pagelines" aria-hidden="true"></i>
+						</a>
+					</h1>
+					<!-- //logo -->
+					<!-- nav -->
+					<div class="nav_w3ls">
+						<nav>
+							<label for="drop" class="toggle toogle-2">目录</label>
+							<input type="checkbox" id="drop">
+							<ul class="menu">
+								<li class="active ml-0"><a href="{{url_for('app_view.index')}}">首页</a></li>
+								<li><a href="{{url_for('app_view.index')}}">我们的团队</a></li>
+								<li><a href="{{url_for('app_view.serch')}}">植物查找</a></li>
+								<li><a href="{{url_for('app_view.serch_list')}}">植物列表</a></li>
+								<li><a href="{{url_for('app_view.index')}}">未来计划</a></li>
+								<li><a href="{{url_for('app_view.gongzhao')}}">微信公众号</a></li>
+								<li><a href="{{url_for('app_view.push_photo')}}">植物识别</a></li>
+								<li><a href="{{url_for('app_view.index')}}">作者语</a></li>
+							</ul>
+						</nav>
+					</div>
+					<!-- //nav -->
+				</div>
+			</div>
+		</header>
+		<!-- //header -->
+		{% block content %}
+
+
+		{% endblock %}
+		<!-- 底部 -->
+		<div class="footer">
+			<p>
+			版权所属：@wuyi &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp未经允许，禁止转载网站内容<br>
+			<a href="#">联系我们&nbsp&nbsp&nbsp&nbsp</a>E-mail:<a href="#">&nbsp&nbspPlants@163.com</a>
+		</p>
+		</div>
+		<!-- 底部 -->
+	</div>
+</body>
+
+</html>
