@@ -17,9 +17,19 @@ def add_up():#添加
     add_id = request.form.get('add_id')
     add_name = request.form.get('add_name')
     add_text = request.form.get('add_text')
+    name_photo = request.form.get('name_photo')
     print(add_id)
     print(add_name)
     print(add_text)
+    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
+    cur = con.cursor()
+    sql = "insert into plants values( %s,'%s','%s');" % (add_id, add_name, add_text)
+    cur.execute(sql)
+    con.commit()
+    sql_photo = "insert into photo values( %s,'%s','%s');" % (add_id, add_name, name_photo)
+    cur.execute(sql_photo)
+    con.commit()
+    con.close()
     return render_template('admin.html')
 
 @app_admin.route('/delete', methods=['GET','POST'])
@@ -32,10 +42,19 @@ def delete():
 
 @app_admin.route('/add_shan', methods=['GET', 'POST'])
 def add_shan():
-    shan_id = request.form.get('shan_id')
+    # shan_id = request.form.get('shan_id')
     shan_name = request.form.get('shan_name')
-    print(shan_id)
+    # print(shan_id)
     print(shan_name)
+    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
+    cur = con.cursor()
+    sql = "delete from plants where name='%s';" % shan_name
+    cur.execute(sql)
+    con.commit()
+    Sql = "delete from photo where name='%s';" % shan_name
+    cur.execute(Sql)
+    con.commit()
+    con.close()
     return "删除成功"
 
 @app_admin.route('/amend', methods=['GET', 'POST'])
@@ -48,12 +67,18 @@ def amend():#修改
 
 @app_admin.route('/add_gai', methods=['GET', 'POST'])
 def add_gai():#修改
-    add_id = request.form.get('add_id')
+    # add_id = request.form.get('add_id')
     add_name = request.form.get('add_name')
     add_text = request.form.get('add_text')
-    print(add_id)
+    # print(add_id)
     print(add_name)
     print(add_text)
+    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
+    cur = con.cursor()
+    sql = "update plants set  body = '%s' where name = '%s';" % (add_text,add_name)
+    cur.execute(sql)
+    con.commit()
+    con.close()
     return render_template('amend.html')
 
 @app_admin.route('/serch_admin',methods=['POST','GET'])
