@@ -9,7 +9,7 @@ def index():
     # ip = request.remote_addr
     # print(ip)
     Time = time.strftime('%Y-%m-%d')
-    con = MySQLdb.connect(host='localhost', user='root', passwd='密码', db='数据库名', charset='utf8')
+    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
     con = con.cursor()
     sql = "select * from ritui order by id desc limit 1"#最新的，倒序输出
     con.execute(sql)
@@ -42,7 +42,7 @@ def Serch():
     N = []
     data = request.form.get('serch')
     value = data
-    con = MySQLdb.connect(host='localhost', user='root', passwd='密码', db='数据库名', charset='utf8')
+    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
     con = con.cursor()
     sql = "select * from plants where name like '%s%%'" % value
     con.execute(sql)
@@ -65,7 +65,7 @@ def Serch():
 
 @app_view.route('/List',methods=['POST','GET'])
 def serch_list():
-    con = MySQLdb.connect(host='localhost', user='root', passwd='密码', db='数据库名', charset='utf8')
+    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
     con = con.cursor()
     sql = "select * from plant_name"
     con.execute(sql)
@@ -90,7 +90,7 @@ def l_serch():
     D = []
     N = []
     value = list_name
-    con = MySQLdb.connect(host='localhost', user='root', passwd='密码', db='数据库名', charset='utf8')
+    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
     con = con.cursor()
     sql = "select * from plants where name like '%s%%'" % value
     con.execute(sql)
