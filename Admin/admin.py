@@ -106,7 +106,7 @@ def add_fabu():
         return "失败"
 
 def sql_go(sql):
-    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
+    con = MySQLdb.connect(host='localhost', user='root', passwd='密码', db='数据库名', charset='utf8')
     cur = con.cursor()
     sql = sql
     cur.execute(sql)
