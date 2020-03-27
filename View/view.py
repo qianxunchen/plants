@@ -6,7 +6,7 @@ app_view = Blueprint('app_view', __name__)
 
 @app_view.route('/',methods=['POST','GET'])
 def index():
-    # ip = request.remote_addr
+    # ip = request.remote_addr       #获取访问者ip
     # print(ip)
     Time = time.strftime('%Y-%m-%d')
     con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
