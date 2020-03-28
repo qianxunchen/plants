@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, Blueprint
 import MySQLdb
 import time
+import json
 
 app_view = Blueprint('app_view', __name__)
 
@@ -9,7 +10,7 @@ def index():
     # ip = request.remote_addr       #获取访问者ip
     # print(ip)
     Time = time.strftime('%Y-%m-%d')
-    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
+    con = MySQLdb.connect(host='localhost', user='root', passwd='c密码', db='study', charset='utf8')
     con = con.cursor()
     sql = "select * from ritui order by id desc limit 1"#最新的，倒序输出
     con.execute(sql)
@@ -42,17 +43,15 @@ def Serch():
     N = []
     data = request.form.get('serch')
     value = data
-    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
-    con = con.cursor()
     sql = "select * from plants where name like '%s%%'" % value
-    con.execute(sql)
+    con = sql_1(sql)
     numrows = int(con.rowcount)
     for i in range(numrows):
         row = con.fetchone()
         N.append(row[2])
 
     photo = "select * from photo where name like '%s%%'" % value
-    con.execute(photo)
+    con = sql_1(photo)
     numrow = int(con.rowcount)
     for x in range(numrow):
         photos = con.fetchone()
@@ -65,10 +64,8 @@ def Serch():
 
 @app_view.route('/List',methods=['POST','GET'])
 def serch_list():
-    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
-    con = con.cursor()
     sql = "select * from plant_name"
-    con.execute(sql)
+    con = sql_1(sql)
     results = con.fetchall()
     names = []
     for result in results:
@@ -90,27 +87,24 @@ def l_serch():
     D = []
     N = []
     value = list_name
-    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
-    con = con.cursor()
     sql = "select * from plants where name like '%s%%'" % value
-    con.execute(sql)
+    con = sql_1(sql)
     numrows = int(con.rowcount)
     for i in range(numrows):
         row = con.fetchone()
         N.append(row[2])
 
     photo = "select * from photo where name like '%s%%'" % value
-    con.execute(photo)
-    numrow = int(con.rowcount)
+    conn = sql_1(photo)
+    numrow = int(conn.rowcount)
     for x in range(numrow):
-        photos = con.fetchone()
+        photos = conn.fetchone()
         D.append(photos[2])
 
     ph = {'src': D}
     now = {"nowname": list_name}
     post = {'message': N}
     return render_template('model.html', title='Plants', **post, **now, **ph)
-
 
 @app_view.route('/gongzhao',methods=['POST','GET'])
 def gongzhao():
@@ -123,5 +117,28 @@ def push_photo():
 @app_view.route('/push',methods=['POST','GET'])
 def push():
     img = request.files.get('photo')
-    img.save('static/push/test.jpg')
+    img.save('../static/push/test.jpg')
     return "success"
+
+@app_view.route('/json_out/<name>',methods=['POST','GET'])
+def json_out(name):
+    N = []
+    dict_json = {}
+    name = name
+    sql = "select * from plants where name like '%s%%'" % name
+    con = sql_1(sql)
+    numrows = int(con.rowcount)
+    for i in range(numrows):
+        row = con.fetchone()
+        N.append(row[2])
+    dict_json['name'] = name
+    dict_json['body'] = N
+    return json.dumps(dict_json, ensure_ascii=False)
+
+
+def sql_1(sql):
+    con = MySQLdb.connect(host='localhost', user='root', passwd='密码', db='study', charset='utf8')
+    con = con.cursor()
+    sql = sql
+    con.execute(sql)
+    return con
