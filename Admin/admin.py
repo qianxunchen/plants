@@ -18,10 +18,12 @@ def add_up():#添加
     add_name = request.form.get('add_name')
     add_text = request.form.get('add_text')
     name_photo = request.form.get('name_photo')
-    sql = "insert into plants values( %s,'%s','%s');" % (add_id, add_name, add_text)
-    data = sql_go(sql)
-    Sql = "insert into photo values( %s,'%s','%s');" % (add_id, add_name, name_photo)
-    Data = sql_go(Sql)
+    sql = "insert into plants values( %s,%s,%s);"
+    args = (add_id, add_name, add_text)
+    data = sql_go(sql, args)
+    Sql = "insert into photo values( %s,%s,%s);"
+    args = (add_id, add_name, name_photo)
+    Data = sql_go(Sql, args)
 
     if data == True and Data == True:
         return render_template('admin.html')
@@ -40,8 +42,9 @@ def delete():
 def add_shan():
     # shan_id = request.form.get('shan_id')
     shan_name = request.form.get('shan_name')
-    sql = "delete from plants where name='%s';" % shan_name
-    data = sql_go(sql)
+    sql = "delete from plants where name = %s;"
+    args = (shan_name,)
+    data = sql_go(sql,args)
 
     if data == True:
         return "删除成功"
@@ -61,8 +64,9 @@ def add_gai():#修改
     # add_id = request.form.get('add_id')
     add_name = request.form.get('add_name')
     add_text = request.form.get('add_text')
-    sql = "update plants set  body = '%s' where name = '%s';" % (add_text, add_name)
-    data = sql_go(sql)
+    sql = "update plants set  body = %s where name = %s;"
+    args = (add_text, add_name)
+    data = sql_go(sql, args)
 
     if data == True:
         return render_template('amend.html')
@@ -95,21 +99,24 @@ def add_fabu():
     name_put = request.form.get('name_put')
     min_know = request.form.get('min_know')
     name_photo = request.form.get('name_photo')
-    sql = "insert into ritui values( %s,'%s','%s','%s','%s');" % (name_id, name, name_study, name_put, min_know)
-    data = sql_go(sql)
-    Sql = "insert into photo values( %s,'%s','%s');" % (name_id, name, name_photo)
-    Data = sql_go(Sql)
+    sql = "insert into ritui values( %s,%s,%s,%s,%s);"
+    args = (name_id, name, name_study, name_put, min_know)
+    data = sql_go(sql,args)
+    Sql = "insert into photo values( %s,%s,%s);"
+    args = (name_id, name, name_photo)
+    Data = sql_go(Sql,args)
 
     if data == True and Data == True:
         return "发布成功"
     else:
         return "失败"
 
-def sql_go(sql):
+def sql_go(sql,args):
     con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
     cur = con.cursor()
     sql = sql
-    cur.execute(sql)
+    args = args
+    cur.execute(sql,args)
     con.commit()
     con.close()
     return True

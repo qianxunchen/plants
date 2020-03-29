@@ -10,7 +10,7 @@ def index():
     # ip = request.remote_addr       #获取访问者ip
     # print(ip)
     Time = time.strftime('%Y-%m-%d')
-    con = MySQLdb.connect(host='localhost', user='root', passwd='c密码', db='study', charset='utf8')
+    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
     con = con.cursor()
     sql = "select * from ritui order by id desc limit 1"#最新的，倒序输出
     con.execute(sql)
@@ -42,16 +42,16 @@ def Serch():
     D = []
     N = []
     data = request.form.get('serch')
-    value = data
-    sql = "select * from plants where name like '%s%%'" % value
-    con = sql_1(sql)
+    args = data
+    sql = "select * from plants where name like %s"
+    con = sql_1(sql,args)
     numrows = int(con.rowcount)
     for i in range(numrows):
         row = con.fetchone()
         N.append(row[2])
 
-    photo = "select * from photo where name like '%s%%'" % value
-    con = sql_1(photo)
+    photo = "select * from photo where name like %s"
+    con = sql_1(photo,args)
     numrow = int(con.rowcount)
     for x in range(numrow):
         photos = con.fetchone()
@@ -65,7 +65,9 @@ def Serch():
 @app_view.route('/List',methods=['POST','GET'])
 def serch_list():
     sql = "select * from plant_name"
-    con = sql_1(sql)
+    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
+    con = con.cursor()
+    con.execute(sql)
     results = con.fetchall()
     names = []
     for result in results:
@@ -86,16 +88,16 @@ def list_serch():
 def l_serch():
     D = []
     N = []
-    value = list_name
-    sql = "select * from plants where name like '%s%%'" % value
-    con = sql_1(sql)
+    args = list_name
+    sql = "select * from plants where name like %s"
+    con = sql_1(sql,args)
     numrows = int(con.rowcount)
     for i in range(numrows):
         row = con.fetchone()
         N.append(row[2])
 
-    photo = "select * from photo where name like '%s%%'" % value
-    conn = sql_1(photo)
+    photo = "select * from photo where name like %s"
+    conn = sql_1(photo,args)
     numrow = int(conn.rowcount)
     for x in range(numrow):
         photos = conn.fetchone()
@@ -124,9 +126,9 @@ def push():
 def json_out(name):
     N = []
     dict_json = {}
-    name = name
-    sql = "select * from plants where name like '%s%%'" % name
-    con = sql_1(sql)
+    args = name
+    sql = "select * from plants where name like %s"
+    con = sql_1(sql,args)
     numrows = int(con.rowcount)
     for i in range(numrows):
         row = con.fetchone()
@@ -136,9 +138,10 @@ def json_out(name):
     return json.dumps(dict_json, ensure_ascii=False)
 
 
-def sql_1(sql):
-    con = MySQLdb.connect(host='localhost', user='root', passwd='密码', db='study', charset='utf8')
+def sql_1(sql,args):
+    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
     con = con.cursor()
     sql = sql
-    con.execute(sql)
+    args = ('%'+args+'%',)
+    con.execute(sql, args)
     return con
