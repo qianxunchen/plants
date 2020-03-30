@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, Blueprint
 import MySQLdb
 import time
 import json
+import base64
+import requests
 
 app_view = Blueprint('app_view', __name__)
 
@@ -116,11 +118,35 @@ def gongzhao():
 def push_photo():
     return render_template('上传图片.html')
 
+# 上传图片识别
 @app_view.route('/push',methods=['POST','GET'])
 def push():
+    D = []
+    N = []
     img = request.files.get('photo')
     img.save('../static/push/test.jpg')
-    return "success"
+    lujing = '../static/push/test.jpg'
+    name = baidu_api(lujing)
+    print(name)
+    args = name
+    sql = "select * from plants where name like %s"
+    con = sql_1(sql, args)
+    numrows = int(con.rowcount)
+    for i in range(numrows):
+        row = con.fetchone()
+        N.append(row[2])
+
+    photo = "select * from photo where name like %s"
+    con = sql_1(photo, args)
+    numrow = int(con.rowcount)
+    for x in range(numrow):
+        photos = con.fetchone()
+        D.append(photos[2])
+
+    ph = {'src': D}
+    now = {"nowname": name}
+    post = {'message': N}
+    return render_template('model.html', title='Plants', **post, **now, **ph)
 
 @app_view.route('/json_out/<name>',methods=['POST','GET'])
 def json_out(name):
@@ -138,6 +164,31 @@ def json_out(name):
     return json.dumps(dict_json, ensure_ascii=False)
 
 
+def baidu_api(lujing):
+    '''
+    调用百度植物识别api进行植物识别
+    '''
+    lujing = lujing
+    request_url = "https://aip.baidubce.com/rest/2.0/image-classify/v1/plant"
+    # 二进制方式打开图片文件
+    f = open(lujing, 'rb')
+    img = base64.b64encode(f.read())
+
+    params = {"image":img}
+    access_token = '24.492596bf4758bb09ca7de0494df007c8.2592000.1588136146.282335-19160109'
+    request_url = request_url + "?access_token=" + access_token
+    headers = {'content-type': 'application/x-www-form-urlencoded'}
+    response = requests.post(request_url, data=params, headers=headers)
+    if response:
+        # print(response.json())
+        data = response.json()
+        # data = {'log_id': 5948225013327494110,
+        #         'result': [{'score': 0.6394079327583313, 'name': '月季花'}, {'score': 0.26973944902420044, 'name': '玫瑰'},
+        #                    {'score': 0.1157265231013298, 'name': '当代月季'}]}
+
+        Data = data['result'][0]
+        name = Data['name']
+    return name
 def sql_1(sql,args):
     con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
     con = con.cursor()
