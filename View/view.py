@@ -163,6 +163,36 @@ def json_out(name):
     dict_json['body'] = N
     return json.dumps(dict_json, ensure_ascii=False)
 
+@app_view.route('/wx_tui',methods=['POST','GET'])
+def wx_tui():
+    dict_json = {}
+    Time = time.strftime('%Y-%m-%d')
+    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
+    con = con.cursor()
+    sql = "select * from ritui order by id desc limit 1"  # 最新的，倒序输出
+    con.execute(sql)
+    results = con.fetchone()
+    names = []
+    min_datas = []
+    max_datas = []
+    Knowledge = []
+    name = results[1]
+    zhongshu = results[2]
+    fenbu = results[3]
+    knowledge = results[4]
+    names.append(name)
+    min_datas.append(zhongshu)
+    max_datas.append(fenbu)
+    Knowledge.append(knowledge)
+
+    photo_sql = "select * from photo order by id desc limit 1"
+    con.execute(photo_sql)
+    p = con.fetchone()[2]
+    dict_json['name'] = names
+    dict_json['knowledge'] = Knowledge
+    dict_json['photo'] = p
+    dict_json['time'] = Time
+    return json.dumps(dict_json, ensure_ascii=False)
 
 def baidu_api(lujing):
     '''
