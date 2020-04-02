@@ -194,6 +194,26 @@ def wx_tui():
     dict_json['time'] = Time
     return json.dumps(dict_json, ensure_ascii=False)
 
+@app_view.route('/wx_photo',methods=['GET','POST'])
+def wx_photo():
+    Time = time.strftime('%Y%m%d'+'%H%M%S')
+    path = '../static/wx_photo/'+Time+'.jpg'
+    img = request.files.get('file')
+    img.save(path)
+    name = baidu_api(path)
+    print(name)
+    N = []
+    dict_json = {}
+    args = name
+    sql = "select * from plants where name like %s"
+    con = sql_1(sql, args)
+    numrows = int(con.rowcount)
+    for i in range(numrows):
+        row = con.fetchone()
+        N.append(row[2])
+    dict_json['name'] = name
+    dict_json['body'] = N
+    return json.dumps(dict_json, ensure_ascii=False)
 def baidu_api(lujing):
     '''
     调用百度植物识别api进行植物识别
