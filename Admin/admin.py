@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, Blueprint
-import MySQLdb
-import time
+from Admin.BASE import *
+from Admin.DB import *
 
 app_admin = Blueprint('app_admin', __name__,)
 
@@ -14,21 +14,12 @@ def admin():
 
 @app_admin.route('/add_up', methods=['GET', 'POST'])
 def add_up():#添加
-    add_id = request.form.get('add_id')
     add_name = request.form.get('add_name')
     add_text = request.form.get('add_text')
-    name_photo = request.form.get('name_photo')
-    sql = "insert into plants values( %s,%s,%s);"
-    args = (add_id, add_name, add_text)
-    data = sql_go(sql, args)
-    Sql = "insert into photo values( %s,%s,%s);"
-    args = (add_id, add_name, name_photo)
-    Data = sql_go(Sql, args)
-
-    if data == True and Data == True:
-        return render_template('admin.html')
-    else:
-        return "失败"
+    add_photo = request.form.get('name_photo')
+    Plants.plants_add(add_name,add_text)
+    Photo.photo_add(add_name,add_photo)
+    return render_template('admin.html')
 
 @app_admin.route('/delete', methods=['GET','POST'])
 def delete():
@@ -40,16 +31,11 @@ def delete():
 
 @app_admin.route('/add_shan', methods=['GET', 'POST'])
 def add_shan():
-    # shan_id = request.form.get('shan_id')
     shan_name = request.form.get('shan_name')
-    sql = "delete from plants where name = %s;"
-    args = (shan_name,)
-    data = sql_go(sql,args)
-
-    if data == True:
-        return "删除成功"
-    else:
-        return "删除失败"
+    data = Plants.query.filter_by(name=shan_name).first()
+    db.session.delete(data)
+    db.session.commit()
+    return render_template('delete.html')
 
 @app_admin.route('/amend', methods=['GET', 'POST'])
 def amend():#修改
@@ -61,17 +47,11 @@ def amend():#修改
 
 @app_admin.route('/add_gai', methods=['GET', 'POST'])
 def add_gai():#修改
-    # add_id = request.form.get('add_id')
     add_name = request.form.get('add_name')
     add_text = request.form.get('add_text')
-    sql = "update plants set  body = %s where name = %s;"
-    args = (add_text, add_name)
-    data = sql_go(sql, args)
-
-    if data == True:
-        return render_template('amend.html')
-    else:
-        return "失败"
+    Plants.query.filter_by(name=add_name).update({'body': add_text})
+    db.session.commit()
+    return render_template('amend.html')
 
 @app_admin.route('/serch_admin',methods=['POST','GET'])
 def serch_admin():
@@ -93,30 +73,11 @@ def fabu():
 
 @app_admin.route('/add_fabu',methods=['POST','GET'])
 def add_fabu():
-    name_id = request.form.get('name_id')
     name = request.form.get('name')
     name_study = request.form.get('name_study')
     name_put = request.form.get('name_put')
     min_know = request.form.get('min_know')
-    name_photo = request.form.get('name_photo')
-    sql = "insert into ritui values( %s,%s,%s,%s,%s);"
-    args = (name_id, name, name_study, name_put, min_know)
-    data = sql_go(sql,args)
-    Sql = "insert into photo values( %s,%s,%s);"
-    args = (name_id, name, name_photo)
-    Data = sql_go(Sql,args)
-
-    if data == True and Data == True:
-        return "发布成功"
-    else:
-        return "失败"
-
-def sql_go(sql,args):
-    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
-    cur = con.cursor()
-    sql = sql
-    args = args
-    cur.execute(sql,args)
-    con.commit()
-    con.close()
-    return True
+    path = request.form.get('name_photo')
+    Ritui.ritui_add(name, name_study, name_put, min_know)
+    Photo.photo_add(name, path)
+    return "发布成功"

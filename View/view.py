@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, Blueprint
-import MySQLdb
 import time
 import json
 import base64
 import requests
+from Admin.DB import *
 
 app_view = Blueprint('app_view', __name__)
 
@@ -12,27 +12,21 @@ def index():
     # ip = request.remote_addr       #获取访问者ip
     # print(ip)
     Time = time.strftime('%Y-%m-%d')
-    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
-    con = con.cursor()
-    sql = "select * from ritui order by id desc limit 1"#最新的，倒序输出
-    con.execute(sql)
-    results = con.fetchone()
+    data = Ritui.query.filter().all()[-1]
     names = []
     min_datas = []
     max_datas = []
     Knowledge = []
-    name = results[1]
-    zhongshu = results[2]
-    fenbu = results[3]
-    knowledge = results[4]
+    name = data.name
+    zhongshu = data.study_name
+    fenbu = data.put_plants
+    knowledge = data.min_knowledge
     names.append(name)
     min_datas.append(zhongshu)
     max_datas.append(fenbu)
     Knowledge.append(knowledge)
-
-    photo_sql = "select * from photo order by id desc limit 1"
-    con.execute(photo_sql)
-    p = con.fetchone()[2]
+    photo_data = Photo.query.filter().all()[-1]
+    p = photo_data.path
     return render_template("仿.html", names=names, min_datas=min_datas, max_datas=max_datas, Time=Time, Knowledge=Knowledge, ph=p)
 
 @app_view.route('/serch',methods=['POST','GET'])
@@ -44,21 +38,10 @@ def Serch():
     D = []
     N = []
     data = request.form.get('serch')
-    args = data
-    sql = "select * from plants where name like %s"
-    con = sql_1(sql,args)
-    numrows = int(con.rowcount)
-    for i in range(numrows):
-        row = con.fetchone()
-        N.append(row[2])
-
-    photo = "select * from photo where name like %s"
-    con = sql_1(photo,args)
-    numrow = int(con.rowcount)
-    for x in range(numrow):
-        photos = con.fetchone()
-        D.append(photos[2])
-
+    messages = Plants.query.filter_by(name=data).first()
+    N.append(messages.body)
+    photo_messages = Photo.query.filter_by(name=data).first()
+    D.append(photo_messages.path)
     ph = {'src': D}
     now = {"nowname": data}
     post = {'message': N}
@@ -66,14 +49,10 @@ def Serch():
 
 @app_view.route('/List',methods=['POST','GET'])
 def serch_list():
-    sql = "select * from plant_name"
-    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
-    con = con.cursor()
-    con.execute(sql)
-    results = con.fetchall()
     names = []
-    for result in results:
-        name = result[1]
+    datas = Plants.query.filter().all()
+    for data in datas:
+        name = data.name
         names.append(name)
     return render_template('list.html',names=names)
 
@@ -90,21 +69,11 @@ def list_serch():
 def l_serch():
     D = []
     N = []
-    args = list_name
-    sql = "select * from plants where name like %s"
-    con = sql_1(sql,args)
-    numrows = int(con.rowcount)
-    for i in range(numrows):
-        row = con.fetchone()
-        N.append(row[2])
-
-    photo = "select * from photo where name like %s"
-    conn = sql_1(photo,args)
-    numrow = int(conn.rowcount)
-    for x in range(numrow):
-        photos = conn.fetchone()
-        D.append(photos[2])
-
+    data = list_name
+    messages = Plants.query.filter_by(name=data).first()
+    N.append(messages.body)
+    photo_messages = Photo.query.filter_by(name=data).first()
+    D.append(photo_messages.path)
     ph = {'src': D}
     now = {"nowname": list_name}
     post = {'message': N}
@@ -128,21 +97,11 @@ def push():
     lujing = '../static/push/test.jpg'
     name = baidu_api(lujing)
     print(name)
-    args = name
-    sql = "select * from plants where name like %s"
-    con = sql_1(sql, args)
-    numrows = int(con.rowcount)
-    for i in range(numrows):
-        row = con.fetchone()
-        N.append(row[2])
-
-    photo = "select * from photo where name like %s"
-    con = sql_1(photo, args)
-    numrow = int(con.rowcount)
-    for x in range(numrow):
-        photos = con.fetchone()
-        D.append(photos[2])
-
+    data = name
+    messages = Plants.query.filter_by(name=data).first()
+    N.append(messages.body)
+    photo_messages = Photo.query.filter_by(name=data).first()
+    D.append(photo_messages.path)
     ph = {'src': D}
     now = {"nowname": name}
     post = {'message': N}
@@ -153,12 +112,8 @@ def json_out(name):
     N = []
     dict_json = {}
     args = name
-    sql = "select * from plants where name like %s"
-    con = sql_1(sql,args)
-    numrows = int(con.rowcount)
-    for i in range(numrows):
-        row = con.fetchone()
-        N.append(row[2])
+    messages = Plants.query.filter_by(name=args).first()
+    N.append(messages.body)
     dict_json['name'] = name
     dict_json['body'] = N
     return json.dumps(dict_json, ensure_ascii=False)
@@ -167,30 +122,23 @@ def json_out(name):
 def wx_tui():
     dict_json = {}
     Time = time.strftime('%Y-%m-%d')
-    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
-    con = con.cursor()
-    sql = "select * from ritui order by id desc limit 1"  # 最新的，倒序输出
-    con.execute(sql)
-    results = con.fetchone()
+    data = Ritui.query.filter().all()[-1]
     names = []
     min_datas = []
     max_datas = []
     Knowledge = []
-    name = results[1]
-    zhongshu = results[2]
-    fenbu = results[3]
-    knowledge = results[4]
+    name = data.name
+    zhongshu = data.study_name
+    fenbu = data.put_plants
+    knowledge = data.min_knowledge
     names.append(name)
     min_datas.append(zhongshu)
     max_datas.append(fenbu)
     Knowledge.append(knowledge)
-
-    photo_sql = "select * from photo order by id desc limit 1"
-    con.execute(photo_sql)
-    p = con.fetchone()[2]
+    photo_data = Photo.query.filter().all()[-1]
     dict_json['name'] = names
     dict_json['knowledge'] = Knowledge
-    dict_json['photo'] = p
+    dict_json['photo'] = photo_data.path
     dict_json['time'] = Time
     return json.dumps(dict_json, ensure_ascii=False)
 
@@ -205,12 +153,8 @@ def wx_photo():
     N = []
     dict_json = {}
     args = name
-    sql = "select * from plants where name like %s"
-    con = sql_1(sql, args)
-    numrows = int(con.rowcount)
-    for i in range(numrows):
-        row = con.fetchone()
-        N.append(row[2])
+    messages = Plants.query.filter_by(name=args).first()
+    N.append(messages.body)
     dict_json['name'] = name
     dict_json['body'] = N
     return json.dumps(dict_json, ensure_ascii=False)
@@ -230,19 +174,7 @@ def baidu_api(lujing):
     headers = {'content-type': 'application/x-www-form-urlencoded'}
     response = requests.post(request_url, data=params, headers=headers)
     if response:
-        # print(response.json())
         data = response.json()
-        # data = {'log_id': 5948225013327494110,
-        #         'result': [{'score': 0.6394079327583313, 'name': '月季花'}, {'score': 0.26973944902420044, 'name': '玫瑰'},
-        #                    {'score': 0.1157265231013298, 'name': '当代月季'}]}
-
         Data = data['result'][0]
         name = Data['name']
     return name
-def sql_1(sql,args):
-    con = MySQLdb.connect(host='localhost', user='root', passwd='cjr622622', db='study', charset='utf8')
-    con = con.cursor()
-    sql = sql
-    args = ('%'+args+'%',)
-    con.execute(sql, args)
-    return con
