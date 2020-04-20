@@ -1,13 +1,14 @@
 from flask import Flask, render_template, request, Blueprint
 from Admin.BASE import *
 from Admin.DB import *
+from Login.login import login_auth
 
 app_admin = Blueprint('app_admin', __name__,)
 
 @app_admin.route('/admin', methods=['GET','POST'])
 def admin():
     passwd = request.cookies.get('passwd')
-    if passwd == '123':
+    if login_auth(passwd):
         return render_template('admin.html')
     else:
         return render_template('login.html')
@@ -24,7 +25,7 @@ def add_up():#添加
 @app_admin.route('/delete', methods=['GET','POST'])
 def delete():
     passwd = request.cookies.get('passwd')
-    if passwd == '123':
+    if login_auth(passwd):
         return render_template('delete.html')
     else:
         return render_template('login.html')
@@ -40,7 +41,7 @@ def add_shan():
 @app_admin.route('/amend', methods=['GET', 'POST'])
 def amend():#修改
     passwd = request.cookies.get('passwd')
-    if passwd == '123':
+    if login_auth(passwd):
         return render_template('amend.html')
     else:
         return render_template('login.html')
@@ -56,7 +57,8 @@ def add_gai():#修改
 @app_admin.route('/serch_admin',methods=['POST','GET'])
 def serch_admin():
     passwd = request.cookies.get('passwd')
-    if passwd == '123':
+    print(passwd)
+    if login_auth(passwd):
         return render_template('serch_admin.html')
     else:
         return render_template("login.html")
@@ -66,7 +68,7 @@ def serch_admin():
 @app_admin.route('/fabu',methods=['POST','GET'])
 def fabu():
     passwd = request.cookies.get('passwd')
-    if passwd == '123':
+    if login_auth(passwd):
         return render_template('fabu.html')
     else:
         return render_template("login.html")

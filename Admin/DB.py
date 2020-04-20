@@ -1,6 +1,7 @@
 from Admin.BASE import *
 
 
+
 app,db = create_app()
 class Plants(db.Model):
     __tablename__ = 'test_plants'
@@ -52,3 +53,10 @@ class Ritui(db.Model):
         user.min_knowledge = min_knowledge
         db.session.add(user)
         db.session.commit()
+
+
+class User(db.Model):
+    __tablename__ = 'test_users'
+    uid = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(24), unique=True)
+    password = db.Column(db.String(24))
